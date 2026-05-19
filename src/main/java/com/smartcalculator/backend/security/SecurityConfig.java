@@ -33,7 +33,8 @@ public class SecurityConfig {
             throws Exception {
 
         http
-                .cors(Customizer.withDefaults())
+                // FIXED: explicitly using CORS source bean
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
@@ -61,8 +62,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // FIXED: added Vercel frontend URL
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://smart-calculator-frontend-pg3x.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
